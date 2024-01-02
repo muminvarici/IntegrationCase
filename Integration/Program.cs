@@ -1,4 +1,5 @@
-﻿using Integration.Service;
+﻿using Integration.Common;
+using Integration.Service;
 
 namespace Integration;
 
@@ -7,16 +8,16 @@ public abstract class Program
     public static void Main(string[] args)
     {
         var service = new ItemIntegrationService();
-        
-        ThreadPool.QueueUserWorkItem(_ => service.SaveItem("a"));
-        ThreadPool.QueueUserWorkItem(_ => service.SaveItem("b"));
-        ThreadPool.QueueUserWorkItem(_ => service.SaveItem("c"));
+
+        ThreadPool.QueueUserWorkItem(_ => PrintResult(service.SaveItem("a")));
+        ThreadPool.QueueUserWorkItem(_ => PrintResult(service.SaveItem("b")));
+        ThreadPool.QueueUserWorkItem(_ => PrintResult(service.SaveItem("c")));
 
         Thread.Sleep(500);
 
-        ThreadPool.QueueUserWorkItem(_ => service.SaveItem("a"));
-        ThreadPool.QueueUserWorkItem(_ => service.SaveItem("b"));
-        ThreadPool.QueueUserWorkItem(_ => service.SaveItem("c"));
+        ThreadPool.QueueUserWorkItem(_ => PrintResult(service.SaveItem("a")));
+        ThreadPool.QueueUserWorkItem(_ => PrintResult(service.SaveItem("b")));
+        ThreadPool.QueueUserWorkItem(_ => PrintResult(service.SaveItem("c")));
 
         Thread.Sleep(5000);
 
@@ -25,5 +26,10 @@ public abstract class Program
         service.GetAllItems().ForEach(Console.WriteLine);
 
         Console.ReadLine();
+    }
+
+    private static void PrintResult(Result result)
+    {
+        Console.WriteLine("{0} - {1}", result.Success, result.Message);
     }
 }
