@@ -1,9 +1,10 @@
 ﻿using Integration.Common;
+using Integration.Service.Abstractions;
 using StackExchange.Redis;
 
 namespace Integration.Service;
 
-public class RedisLockService
+public class RedisLockService : IDistributedLockService
 {
     //We need to move the connection string to appsettings.json etc. in practice but it's ok for development
     private static readonly Lazy<ConnectionMultiplexer> LazyConnection = new(() => ConnectionMultiplexer.Connect("localhost:6379"));
@@ -11,18 +12,20 @@ public class RedisLockService
     private static readonly object LockObject = new();
     private static RedisLockService _instance;
 
-
-    public static RedisLockService Instance
+    private RedisLockService()
     {
-        get
-        {
-            lock (LockObject)
-            {
-                return _instance ??= new RedisLockService();
-            }
-        }
     }
 
+    /// <summary>
+    /// Singleton implementation for the related class
+    /// </summary>
+    public static IDistributedLockService GetInstance()
+    {
+        lock (LockObject)
+        {
+            return _instance ??= new RedisLockService();
+        }
+    }
 
     /// <summary>
     /// Method to acquire a distributed lock
