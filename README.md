@@ -1,4 +1,4 @@
-﻿# AdCreative.ai Integration Case
+﻿# Case:
 
 ## Description of the Problem
 
